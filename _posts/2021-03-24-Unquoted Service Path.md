@@ -20,7 +20,7 @@ tags: vulnerabilidad
 
 # Explicación de la vulnerabilidad con pseudocódigo
 
-En este fragmento de código podemos ver como, la función proceso ( que simula un servicio que se ejecuta periodicamente ) ejecuta la ruta.
+En este fragmento de código podemos ver como, la función proceso ( que simula un servicio que se ejecuta periodicamente ) ejecuta la ruta:
 ```python
 def servicio():  
   ejecutar("C:\CARPETA UNO\CARPETA DOS\CARPETA TRES\sql.exe") 
