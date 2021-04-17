@@ -18,7 +18,7 @@ Ahora bien, en este post estamos tratando las shell desde el punto de visto de c
 
 
 
-# Tipos de Shell
+# Tipos de Shell según la forma en la que la conseguimos.
 
 * Reverse Shell: La máquina es forzada a ejecutar código que conecta con nuestro ordenador. Es decir, cuando nosotros como ATACANTES nos ponemos a la escucha con, por ejemplo NETCAT...y logramos que la máquina ejecute cierto comando, recibiremos una  `REVERSE SHELL`...
 * Bind Shell: El código ejecutado en la máquina víctima se usa para ejecutar un listener que apunta directamente a la shell víctima.
