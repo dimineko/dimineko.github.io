@@ -29,12 +29,12 @@ El temario del curso, el cual es gratuito,está compuesto de:
 * Diapositivas (presentaciones)  
 * PDFs
 * Videos
-* Máquina vulnerables: Despues de leerte y ver todo, dispones en la mayoria de temas de una máquina vulnerable diseñada especificamente para que la explotes (vulneres) y probar que has aprendido todo lo que te han enseñado. Y...¡no te preocupes! Si no eres capaz de realizarlas tendrás las soluciones las cuales recomiendo leer y seguir al pie de la letra para aprender lo que te cuesta.
+* Máquinas vulnerables: Despues de leerte y ver todo, dispones en la mayoria de temas de una máquina vulnerable diseñada especificamente para que la explotes (vulneres) y probar que has aprendido todo lo que te han enseñado. Y...¡no te preocupes! Si no eres capaz de realizarlas tendrás las soluciones las cuales recomiendo leer y seguir al pie de la letra para aprender lo que te cuesta.
 
 Dentro del temario hay muchos temas, pero hay 3 temas "GENERALES":
 * Conocimientos básicos (Penetration Testing Prerequisites) --> Para quienes apenas tienen conocimiento de algunos temas como redes, modelo OSI,TCP/IP...Y otra cosas, que aunque son teorícas y a nadie le apetece estudiar, son necesarias para entender que pasa detrás de todos los ataques que ejecutamos, tanto en enumeración, ejecucción...etc.
 * Programación (Penetration Testing: Preliminary Skills & Programming) --> Esta parte personalmente yo me la salté por dos motivos: Ya tengo conocimientos de programación y me dijeron que no entraba en el examen. Sin embargo, os la recomiendo mucho si no sabeis programar ya que viene bien tener conocimientos básicos de programación para ser capaces de leer exploits y modificarlos. (Más bien es necesario). En resúmen: Si sabes programar (con soltura) saltate la parte de programación del curso. Si no sabes te recomiendo encarecidamente que la curses.
-* Pentesting puro y duro (Penetration Testing Basics) --> Aquí te enseñan lo que vienes a buscar: Hacking. Desde simples escaneos de puertos, pasando por fuerza bruta,LFI,RFE,Listeners,Burpsuite,Wireshark,Pivoting, hasta ejecucción de exploits y escalada de privilegios. (Me he dejado muchas cosas, te enseñan de todo, sales del curso con una base enorme.)
+* Pentesting puro y duro (Penetration Testing Basics) --> Aquí te enseñan lo que vienes a buscar: Hacking. Desde simples escaneos de puertos, pasando por fuerza bruta,LFI,RFI,Listeners,Burpsuite,Wireshark,Pivoting, hasta ejecucción de exploits y escalada de privilegios. (Me he dejado muchas cosas, te enseñan de todo, sales del curso con una base enorme.)
 
 # ¿Cómo puedo saber si estoy preparado?
 
