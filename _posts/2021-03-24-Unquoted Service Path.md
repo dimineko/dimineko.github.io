@@ -8,7 +8,7 @@ tags: vulnerabilidad
 
 
 
-# Requisitos
+# Requisitos.
 
 * Disponer de alguna forma de subir archivos , ya sea o bien teniendo una shell (Netcat, Meterpreter, etc...) o bien tener alguna forma de subir ficheros, ya sea RFI o LFI,o como sea que hayais vulnerado la máquina en la que quereís escalar privilegios.
 * Si la shell es de un usuario sin privilegios,nos bastaría con poder subir (si no se pueden subir ficheros, pero si crearlos, podría funcionar si somos capaces de crear un ejecutable completamente funcional, sin necesidad de ejecutarlo)
