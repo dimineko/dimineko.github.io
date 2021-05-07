@@ -1,4 +1,56 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-30T21:50:07+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">El baúl de Diego</title><subtitle>Cybersecurity Enthusiast &amp; Geek</subtitle><author><name>Diego Martín dos Santos</name></author><entry><title type="html">Explotación de la vulnerabilidad LD_PRELOAD Capabilties</title><link href="http://localhost:4000/2021/04/30/LD-PRELOAD.html" rel="alternate" type="text/html" title="Explotación de la vulnerabilidad LD_PRELOAD Capabilties" /><published>2021-04-30T00:00:00+02:00</published><updated>2021-04-30T00:00:00+02:00</updated><id>http://localhost:4000/2021/04/30/LD-PRELOAD</id><content type="html" xml:base="http://localhost:4000/2021/04/30/LD-PRELOAD.html">&lt;h1 id=&quot;situacion&quot;&gt;Situacion&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-05-07T17:01:04+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">El baúl de Diego</title><subtitle>Cybersecurity Enthusiast &amp; Geek</subtitle><author><name>Diego Martín dos Santos</name></author><entry><title type="html">Ataque Active Directory: ‘LLMNR’</title><link href="http://localhost:4000/2021/05/07/Captura-de-hashes-con-responder.html" rel="alternate" type="text/html" title="Ataque Active Directory: ‘LLMNR’" /><published>2021-05-07T00:00:00+02:00</published><updated>2021-05-07T00:00:00+02:00</updated><id>http://localhost:4000/2021/05/07/Captura%20de%20hashes%20con%20responder</id><content type="html" xml:base="http://localhost:4000/2021/05/07/Captura-de-hashes-con-responder.html">&lt;h1 id=&quot;en-que-consiste-el-ataque-y-la-herramienta-responder-&quot;&gt;¿En que consiste el ataque y la herramienta “RESPONDER” ?&lt;/h1&gt;
+
+&lt;p&gt;Cuando un equipo Windows no es capaz de “resolver” &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(encontrar)&lt;/code&gt; otro equipo usando DNS… usá el protocolo LLMNR protocol (Link-Local Multicast Name Resolution) para preguntar a los equipos cercanos si alguien sabe “resolverlo” o llegar a el…&lt;/p&gt;
+
+&lt;p&gt;Cuando se usa LLMNR/NBT-NS para “resolver” un nombre, cualquier equipo en la red puede responder.&lt;/p&gt;
+
+&lt;p&gt;Aqui es donde entra el &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;responder&quot;&lt;/code&gt;… una herramienta que envenena el tráfico.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ibb.co/FzXbX1y&quot;&gt;&lt;img src=&quot;https://i.ibb.co/w47N7qP/image.png&quot; alt=&quot;image&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;cómo-llevarlo-a-cabo&quot;&gt;¿Cómo llevarlo a cabo?&lt;/h1&gt;
+
+&lt;p&gt;Aclaración: Este ejemplo se va a llevar mediante una red de active directory local montada con máquinas virtuales.&lt;/p&gt;
+
+&lt;p&gt;Primero necesitamos , al menos, un Windows Server y un Windows Cliente (ya sea W7,8,10.., en este caso un W10).&lt;/p&gt;
+
+&lt;p&gt;Luego, como atacantes en la red, pondremos el responder a capturar cuanto antes. Es una especie de MITM explotando DNS.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://imgbb.com/&quot;&gt;&lt;img src=&quot;https://i.ibb.co/D4JpQK7/image.png&quot; alt=&quot;image&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Con &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-i&lt;/code&gt; indicamos la interfaz de red en la que queremos escuchar.&lt;/li&gt;
+  &lt;li&gt;Con &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-d&lt;/code&gt; indicamos que haga peticiones al dominio usando nombres de NETBIOS&lt;/li&gt;
+  &lt;li&gt;Con &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-w&lt;/code&gt; indicamos que se inicie el servidor WPAD ‘rogue proxy server’.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Como vemos nos empezará a llegar mucho tráfico , generalmente sin importancia.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ibb.co/0Vvmxzt&quot;&gt;&lt;img src=&quot;https://i.ibb.co/S7G5zZr/image.png&quot; alt=&quot;image&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;De tal modo que si desde cualquier equipo que esté dentro de la red en la que estamos escuchando alguien intenta acceder a algo que “supuestamente” no existe o el DNS no logra resolver, el &lt;b&gt;“RESPONDER” envenenará el tráfico &lt;/b&gt; de tal forma que creeran que si existe y por tanto tendrán que introducir las credenciales como se ve en esta captura, intentando acceder a un supuesto share llamado “produccion”.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Así se accedería normalmente.&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://imgbb.com/&quot;&gt;&lt;img src=&quot;https://i.ibb.co/QPD5KMg/image.png&quot; alt=&quot;image&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Normalmente, sin la intervención del atacante, al buscar algo que no existe, saldría esto:&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://imgbb.com/&quot;&gt;&lt;img src=&quot;https://i.ibb.co/LvGLNsY/image.png&quot; alt=&quot;image&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Pero como hay un atacante escuchando y “envenenando” el tráfico, el equipo de la víctima pensará que si existe y pedirá credenciales. Estás credenciales son las que nos llegarán.&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://imgbb.com/&quot;&gt;&lt;img src=&quot;https://i.ibb.co/QF8h7Zj/image.png&quot; alt=&quot;image&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Y desde la máquina del atacante…&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ibb.co/KKXpVkH&quot;&gt;&lt;img src=&quot;https://i.ibb.co/sW2dsGr/image.png&quot; alt=&quot;image&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Con un hash ya se puede hacer mucho pero encima estos hashes se pueden crackear….&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ibb.co/Kxfkr0r&quot;&gt;&lt;img src=&quot;https://i.ibb.co/nMYvLgL/image.png&quot; alt=&quot;image&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Y ya con unas credenciales, ya sean de ADMIN o no, podemos intentar multitud de otros escaneos.&lt;/b&gt;&lt;/p&gt;</content><author><name>Diego Martín dos Santos</name></author><category term="tryhackme," /><category term="wireshark" /><summary type="html">¿En que consiste el ataque y la herramienta “RESPONDER” ?</summary></entry><entry><title type="html">Explotación de la vulnerabilidad LD_PRELOAD Capabilties</title><link href="http://localhost:4000/2021/04/30/LD-PRELOAD.html" rel="alternate" type="text/html" title="Explotación de la vulnerabilidad LD_PRELOAD Capabilties" /><published>2021-04-30T00:00:00+02:00</published><updated>2021-04-30T00:00:00+02:00</updated><id>http://localhost:4000/2021/04/30/LD-PRELOAD</id><content type="html" xml:base="http://localhost:4000/2021/04/30/LD-PRELOAD.html">&lt;h1 id=&quot;situacion&quot;&gt;Situacion&lt;/h1&gt;
 &lt;p&gt;Me encontraba realizando la máquina Keldagrim de TryHackMe.
 Había conseguido acceso NO PRIVILEGIADO a la máquina víctima y no encontraba véctores de ataque para escalar privilegios, ahí fue cuando decídi usar “LINPEAS.SH” para automatizar la enumeración.&lt;/p&gt;
 
@@ -15,7 +67,7 @@ Por tanto, si creamos un payload en C compilado que nos estableza todos nuestro 
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LD_PRELOAD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/tmp/shell.so ps
   &lt;span class=&quot;c&quot;&gt;#Podemos indicar sudo ya que este comando supuestamente solo va a ejecutar PS,&lt;/span&gt;
-  &lt;span class=&quot;c&quot;&gt;#el cúal podemos ejecutar como sudo.&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;#el cúal podemos ejecutar como sudo. (lo encontramos en sudo -l)&lt;/span&gt;
   &lt;span class=&quot;c&quot;&gt;#Por tanto y en resúmen, ejecutará &quot;ps&quot; como sudo y precargará la libreria(Payload)&lt;/span&gt;
   &lt;span class=&quot;c&quot;&gt;#con los mismos permisos, es decir,SUDO. Por tanto, si el payload esta &lt;/span&gt;
   &lt;span class=&quot;c&quot;&gt;#configurado correctamente, obtendremos permisos de root.&lt;/span&gt;
@@ -42,7 +94,9 @@ Por tanto, si creamos un payload en C compilado que nos estableza todos nuestro 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;Si todo ha salido bien, conseguiremos root.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.hackingarticles.in/linux-privilege-escalation-using-ld_preload/&quot;&gt;Linux Privilege Escalation using LD_Preload&lt;/a&gt;&lt;/p&gt;</content><author><name>Diego Martín dos Santos</name></author><category term="ld,capabilities,explotacion,privesc" /><summary type="html">Situacion Me encontraba realizando la máquina Keldagrim de TryHackMe. Había conseguido acceso NO PRIVILEGIADO a la máquina víctima y no encontraba véctores de ataque para escalar privilegios, ahí fue cuando decídi usar “LINPEAS.SH” para automatizar la enumeración. Entre otras cosas muchas, me enumeró que “env_keep+=LD_PRELOAD” tenía la capabilite para usarlo activada…(esto se puede ver supuestamente en “sudo -l”)</summary></entry><entry><title type="html">Writeup: Tryhackme ColddBox.</title><link href="http://localhost:4000/2021/04/28/Writeup-coldbox.html" rel="alternate" type="text/html" title="Writeup: Tryhackme ColddBox." /><published>2021-04-28T00:00:00+02:00</published><updated>2021-04-28T00:00:00+02:00</updated><id>http://localhost:4000/2021/04/28/Writeup-coldbox</id><content type="html" xml:base="http://localhost:4000/2021/04/28/Writeup-coldbox.html">&lt;h1 id=&quot;enumeración&quot;&gt;Enumeración&lt;/h1&gt;
+&lt;h1 id=&quot;agradecimientosbibliografía&quot;&gt;Agradecimientos/Bibliografía&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.hackingarticles.in/linux-privilege-escalation-using-ld_preload/&quot;&gt;Linux Privilege Escalation using LD_Preload&lt;/a&gt; 
+&lt;a href=&quot;https://forum.hackthebox.eu/discussion/4071/using-ld-preload-to-exploit-binaries&quot;&gt;Using LD_PRELOAD to exploit Binaries&lt;/a&gt;&lt;/p&gt;</content><author><name>Diego Martín dos Santos</name></author><category term="ld,capabilities,explotacion,privesc" /><summary type="html">Situacion Me encontraba realizando la máquina Keldagrim de TryHackMe. Había conseguido acceso NO PRIVILEGIADO a la máquina víctima y no encontraba véctores de ataque para escalar privilegios, ahí fue cuando decídi usar “LINPEAS.SH” para automatizar la enumeración. Entre otras cosas muchas, me enumeró que “env_keep+=LD_PRELOAD” tenía la capabilite para usarlo activada…(esto se puede ver supuestamente en “sudo -l”)</summary></entry><entry><title type="html">Writeup: Tryhackme ColddBox.</title><link href="http://localhost:4000/2021/04/28/Writeup-coldbox.html" rel="alternate" type="text/html" title="Writeup: Tryhackme ColddBox." /><published>2021-04-28T00:00:00+02:00</published><updated>2021-04-28T00:00:00+02:00</updated><id>http://localhost:4000/2021/04/28/Writeup-coldbox</id><content type="html" xml:base="http://localhost:4000/2021/04/28/Writeup-coldbox.html">&lt;h1 id=&quot;enumeración&quot;&gt;Enumeración&lt;/h1&gt;
 &lt;p&gt;NMAP: Escaneo de puertos.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://ibb.co/sySrwwy&quot;&gt;&lt;img src=&quot;https://i.ibb.co/J5LP775/mmap1.png&quot; alt=&quot;mmap1&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;

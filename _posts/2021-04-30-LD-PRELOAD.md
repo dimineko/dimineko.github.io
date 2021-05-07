@@ -26,7 +26,7 @@ Es decir:
 ```bash 
   sudo LD_PRELOAD=/tmp/shell.so ps
   #Podemos indicar sudo ya que este comando supuestamente solo va a ejecutar PS,
-  #el cúal podemos ejecutar como sudo.
+  #el cúal podemos ejecutar como sudo. (lo encontramos en sudo -l)
   #Por tanto y en resúmen, ejecutará "ps" como sudo y precargará la libreria(Payload)
   #con los mismos permisos, es decir,SUDO. Por tanto, si el payload esta 
   #configurado correctamente, obtendremos permisos de root.
@@ -56,9 +56,9 @@ sudo LD_PRELOAD=/tmp/shell.so ps
 ```
 Si todo ha salido bien, conseguiremos root.
 
-
+# Agradecimientos/Bibliografía
 [Linux Privilege Escalation using LD_Preload](https://www.hackingarticles.in/linux-privilege-escalation-using-ld_preload/) 
-
+[Using LD_PRELOAD to exploit Binaries](https://forum.hackthebox.eu/discussion/4071/using-ld-preload-to-exploit-binaries)
 
 
 
