@@ -1,11 +1,13 @@
 ---
 layout: post
-title:  "Ataque Active Directory: 'LLMNR'"
-description: En este post entenderemos en que consiste el ataque LLMNR y como hacer uso de el.
+title:  "Ataque Active Directory: Envenenamiento del tráfico & servicio 'LLMNR'"
+description: En este post entenderemos en que consiste el ataque LLMNR y como hacer uso de el, envenenando el tráfico con la herramienta "responder".
 
 tags: tryhackme, wireshark
 ---
 
+
+[Vídeo en mi canal de YT explicando como escuchar & envenenar,obtener hashes & crackear hashes.](https://www.youtube.com/watch?v=s5KtUur8Mzs&t=7s) 
 
 # ¿En que consiste el ataque y la herramienta "RESPONDER" ?
 
@@ -36,7 +38,7 @@ Luego, como atacantes en la red, pondremos el responder a capturar cuanto antes.
 * Con `-w` indicamos que se inicie el servidor WPAD 'rogue proxy server'.
 
 
-Como vemos nos empezará a llegar mucho tráfico , generalmente sin importancia.
+Como vemos nos empezará a llegar mucho tráfico , generalmente sin importancia. Este tráfico será envenenado por nuestra herramienta "responder".
 
 <a href="https://ibb.co/0Vvmxzt"><img src="https://i.ibb.co/S7G5zZr/image.png" alt="image" border="0" /></a>
 
